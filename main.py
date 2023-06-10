@@ -1,34 +1,23 @@
 import pygame
 import random
 import time
+
+from config import *
 from pacman import *
-from util import *
-
-# 游戏颜色
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-YELLOW = (255, 255, 0)
-GREEN = (0, 255, 0)
-BG_COLOR = (80, 80, 80)
-
-food_color_list = (RED)
-
-food_size = 3
 
 
-def run(num_food, num_random_enemies, num_track_enemies):
+def run():
     # 初始化 Pygame
     pygame.init()
 
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("PacMan")
+    pygame.display.set_caption(caption)
 
     # 游戏速度
     FPS = 30
 
     # 初始化角色和食物
-    pacman = PacMan((WIDTH / 2, HEIGHT / 2), image_name="pacman_left.png")
+    pacman = PacMan((WIDTH / 2, HEIGHT / 2))
 
     # 保留偏移，防止一开始就半张图卡在框外
     save_offset = 10
@@ -44,12 +33,12 @@ def run(num_food, num_random_enemies, num_track_enemies):
     random_enemy_list = []
     for i in range(num_random_enemies):
         pos = random_pos()
-        random_enemy_list.append(RandomEnemy(pos, "ghost.png"))
+        random_enemy_list.append(RandomEnemy(pos))
 
     track_enemy_list = []
     for i in range(num_track_enemies):
         pos = random_pos()
-        track_enemy_list.append(TrackEnemy(pos, "ghost.png"))
+        track_enemy_list.append(TrackEnemy(pos))
 
     # 显示分数
     score = 0
@@ -62,9 +51,9 @@ def run(num_food, num_random_enemies, num_track_enemies):
 
     def paint():
         # 渲染游戏画面
-        SCREEN.fill(BG_COLOR)
+        SCREEN.fill(bg_color)
         for food in food_list:
-            pygame.draw.rect(SCREEN, WHITE, food)
+            pygame.draw.rect(SCREEN, food_color, food)
 
         SCREEN.blit(pacman.curr_image(), pacman.rect)
         for enemy in random_enemy_list + track_enemy_list:
@@ -87,7 +76,7 @@ def run(num_food, num_random_enemies, num_track_enemies):
         ending = True
         # 游戏结束结算页面主循环
         while ending:
-            SCREEN.fill(BG_COLOR)
+            SCREEN.fill(bg_color)
             SCREEN.blit(over_text, over_rect)
             SCREEN.blit(score_text, score_rect)
             SCREEN.blit(exit_text, exit_rect)
@@ -109,7 +98,6 @@ def run(num_food, num_random_enemies, num_track_enemies):
     while running:
         # 限制游戏运行速度
         clock.tick(FPS)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -128,7 +116,7 @@ def run(num_food, num_random_enemies, num_track_enemies):
         for food in food_list:
             if pacman.rect.colliderect(food):
                 food_list.remove(food)
-                score += 10
+                score += score_per_food
                 text = font.render(f"Score: {score}", True, WHITE)
 
         # enemy
@@ -136,7 +124,7 @@ def run(num_food, num_random_enemies, num_track_enemies):
             if pacman.rect.colliderect(enemy):
                 end_time = time.time()
                 duration = end_time - start_time
-                end('Game over!  cost %.2fs'%duration)
+                end('Game over!  cost %.2fs' % duration)
 
                 print()
                 return
@@ -152,11 +140,5 @@ def run(num_food, num_random_enemies, num_track_enemies):
     end('You win!  cost %.2fs' % duration)
 
 
-# 食物数量
-num_food = 10
-# 随机移动敌人数量
-num_random_enemies = 3
-# 自动追踪敌人数量
-num_track_enemies = 1
-
-run(num_food, num_random_enemies, num_track_enemies)
+if __name__ == "__main__":
+    run()

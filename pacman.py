@@ -1,8 +1,7 @@
 import pygame
 import random
-from enum import Enum
 
-from util import *
+from config import *
 
 
 class Direction:
@@ -12,7 +11,7 @@ class Direction:
 
 
 class Man:
-    def __init__(self, pos, image_name, speed=5):
+    def __init__(self, pos, image_name, speed=default_speed):
         self.image = pygame.image.load(image_name)
         self.speed = speed
         self.direction = Direction((0, 0))
@@ -47,8 +46,8 @@ class Man:
 
 
 class PacMan(Man):
-    def __init__(self, pos, image_name):
-        super().__init__(pos, image_name)
+    def __init__(self, pos, ):
+        super().__init__(pos, pacman_img_name)
 
     def keyboard_rotate(self, event):
         if event.type == pygame.KEYDOWN:
@@ -83,9 +82,10 @@ class PacMan(Man):
 
 
 class RandomEnemy(Man):
-    def __init__(self, pos, image_name):
-        super().__init__(pos, image_name)
+    def __init__(self, pos):
+        super().__init__(pos, random_enemy_img_name)
         self.direction = Man.random_direction()
+
     def random_rotate(self):
         def hit_wall():
             return (self.rect.top <= 0 and self.direction.y < 0) \
@@ -100,8 +100,8 @@ class RandomEnemy(Man):
 
 
 class TrackEnemy(Man):
-    def __init__(self, pos, image_name):
-        super().__init__(pos, image_name)
+    def __init__(self, pos):
+        super().__init__(pos, track_enemy_img_name)
         self.direction = Man.random_direction()
 
     def track_rotate(self, pos):
