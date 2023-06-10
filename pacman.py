@@ -11,8 +11,7 @@ class Direction:
         self.y = pos[1]
 
 
-class PacMan:
-
+class Man:
     def __init__(self, pos, image_name, speed=5):
         self.image = pygame.image.load(image_name)
         self.speed = speed
@@ -38,6 +37,18 @@ class PacMan:
             self.rect.top = 0
         elif self.rect.bottom > HEIGHT:
             self.rect.bottom = HEIGHT
+
+    def tick(self):
+        self._safe_move()
+
+    @staticmethod
+    def random_direction():
+        return Direction(random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)]))
+
+
+class PacMan(Man):
+    def __init__(self, pos, image_name):
+        super().__init__(pos, image_name)
 
     def keyboard_rotate(self, event):
         if event.type == pygame.KEYDOWN:
@@ -66,10 +77,15 @@ class PacMan:
             elif num > max:
                 return max
             return num
+
         self.direction.x = limit_to_range(self.direction.x, -1, 1)
         self.direction.y = limit_to_range(self.direction.y, -1, 1)
 
 
+class RandomEnemy(Man):
+    def __init__(self, pos, image_name):
+        super().__init__(pos, image_name)
+        self.direction = Man.random_direction()
     def random_rotate(self):
         def hit_wall():
             return (self.rect.top <= 0 and self.direction.y < 0) \
@@ -82,8 +98,11 @@ class PacMan:
         while hit_wall():
             self.direction = Direction(random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)]))
 
-    def tick(self):
-        self._safe_move()
+
+class TrackEnemy(Man):
+    def __init__(self, pos, image_name):
+        super().__init__(pos, image_name)
+        self.direction = Man.random_direction()
 
     def track_rotate(self, pos):
         assert self.direction.x * self.direction.y == 0

@@ -44,12 +44,12 @@ def run(num_food, num_random_enemies, num_track_enemies):
     random_enemy_list = []
     for i in range(num_random_enemies):
         pos = random_pos()
-        random_enemy_list.append(PacMan(pos, "ghost.png"))
+        random_enemy_list.append(RandomEnemy(pos, "ghost.png"))
 
     track_enemy_list = []
     for i in range(num_track_enemies):
         pos = random_pos()
-        track_enemy_list.append(PacMan(pos, "ghost.png"))
+        track_enemy_list.append(TrackEnemy(pos, "ghost.png"))
 
     # 显示分数
     score = 0
@@ -153,7 +153,7 @@ def run(num_food, num_random_enemies, num_track_enemies):
 
 
 # 食物数量
-num_food = 1
+num_food = 10
 # 随机移动敌人数量
 num_random_enemies = 3
 # 自动追踪敌人数量
