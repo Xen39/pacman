@@ -29,13 +29,11 @@ def run():
 
     random_enemy_list = []
     for i in range(num_random_enemies):
-        pos = random_pos()
-        random_enemy_list.append(RandomEnemy(pos))
+        random_enemy_list.append(RandomEnemy(random_pos()))
 
     track_enemy_list = []
     for i in range(num_track_enemies):
-        pos = random_pos()
-        track_enemy_list.append(TrackEnemy(pos))
+        track_enemy_list.append(TrackEnemy(random_pos()))
 
     # 显示分数
     score = 0
@@ -52,9 +50,9 @@ def run():
         for food in food_list:
             pygame.draw.rect(SCREEN, food_color, food)
 
-        SCREEN.blit(pacman.curr_image(), pacman.rect)
-        for enemy in random_enemy_list + track_enemy_list:
-            SCREEN.blit(enemy.curr_image(), enemy.rect)
+        for man in [pacman] + random_enemy_list + track_enemy_list:
+            SCREEN.blit(man.curr_image(), man.rect)
+
         SCREEN.blit(text, (10, 10))
         pygame.display.flip()
 
@@ -122,8 +120,6 @@ def run():
                 end_time = time.time()
                 duration = end_time - start_time
                 end('Game over!  cost %.2fs' % duration)
-
-                print()
                 return
 
         paint()

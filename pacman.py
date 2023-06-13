@@ -11,9 +11,10 @@ class Direction:
 
 
 class Man:
-    def __init__(self, pos, image_name, speed=default_speed):
+    def __init__(self, pos, image_name, speed=default_speed/FPS):
         self.image = pygame.image.load(image_name)
         self.speed = speed
+        assert speed > 0.5, f"speed设置过小({speed * FPS})"
         self.direction = Direction((0, 0))
         self.rect = self.curr_image().get_rect()
         self.rect.center = pos

@@ -10,7 +10,7 @@ GREEN = (0, 255, 0)
 WIDTH = 800
 HEIGHT = 600
 # 帧率
-FPS = 120
+FPS = 100
 # 游戏界面标题
 caption = "PcaMan"
 # 背景色
@@ -27,7 +27,7 @@ food_color = GREEN
 
 # ====================角色
 # 默认移动速度
-default_speed = 5
+default_speed = 60
 
 # ====================玩家
 # 图片名称
