@@ -111,16 +111,24 @@ def run():
         for food in food_list:
             if pacman.rect.colliderect(food):
                 food_list.remove(food)
-                score += score_per_food
-                text = font.render(f"Score: {score}", True, WHITE)
+                pacman.add_weight(1)
 
         # enemy
         for enemy in random_enemy_list + track_enemy_list:
             if pacman.rect.colliderect(enemy):
-                end_time = time.time()
-                duration = end_time - start_time
-                end('Game over!  cost %.2fs' % duration)
-                return
+                if pacman.weight_lv() > enemy.weight_lv():
+                    if enemy in random_enemy_list:
+                        random_enemy_list.remove(enemy)
+                    else:
+                        track_enemy_list.remove(enemy)
+                    pacman.add_weight(10)
+                else:
+                    end_time = time.time()
+                    duration = end_time - start_time
+                    end('Game over!  cost %.2fs' % duration)
+                    return
+
+        text = font.render(f"Score: {pacman.weight * 10}", True, WHITE)
 
         paint()
 

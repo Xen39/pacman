@@ -11,13 +11,15 @@ class Direction:
 
 
 class Man:
-    def __init__(self, pos, image_name, speed=default_speed/FPS):
-        self.image = pygame.image.load(image_name)
+    def __init__(self, pos, image_name, speed=default_speed/FPS, weight=0):
+        self.origin_image = self.image = pygame.image.load(image_name)
         self.speed = speed
         assert speed > 0.5, f"speed设置过小({speed * FPS})"
-        self.direction = Direction((0, 0))
+        self.weight = 0
         self.rect = self.curr_image().get_rect()
         self.rect.center = pos
+        self.add_weight(weight)
+        self.direction = Direction((0, 0))
 
     def curr_image(self):
         return self.image
@@ -41,13 +43,26 @@ class Man:
     def tick(self):
         self._safe_move()
 
+    def weight_lv(self):
+        return self.weight**0.8//10
+
+    def add_weight(self, w):
+        weight_lv1 = self.weight_lv()
+        self.weight += w
+        weight_lv2 = self.weight_lv()
+        if weight_lv2 != weight_lv1:
+            self.image = pygame.transform.rotozoom(self.origin_image, 0, 1 + weight_lv2/10)
+            center = self.rect.center
+            self.rect = self.curr_image().get_rect()
+            self.rect.center = center
+
     @staticmethod
     def random_direction():
         return Direction(random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)]))
 
 
 class PacMan(Man):
-    def __init__(self, pos, ):
+    def __init__(self, pos):
         super().__init__(pos, pacman_img_name)
 
     def keyboard_rotate(self, event):
@@ -84,7 +99,7 @@ class PacMan(Man):
 
 class RandomEnemy(Man):
     def __init__(self, pos):
-        super().__init__(pos, random_enemy_img_name)
+        super().__init__(pos, random_enemy_img_name, weight=random.randint(num_food/10, num_food))
         self.direction = Man.random_direction()
 
     def random_rotate(self):
@@ -102,7 +117,7 @@ class RandomEnemy(Man):
 
 class TrackEnemy(Man):
     def __init__(self, pos):
-        super().__init__(pos, track_enemy_img_name)
+        super().__init__(pos, track_enemy_img_name, weight=random.randint(num_food/10, num_food))
         self.direction = Man.random_direction()
 
     def track_rotate(self, pos):

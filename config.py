@@ -19,7 +19,7 @@ bg_color = (80, 80, 80)
 # 食物大小
 food_size = 5
 # 食物数量
-num_food = 10
+num_food = 100
 # 每个食物的分数
 score_per_food = 10
 # 食物颜色
