@@ -13,9 +13,6 @@ def run():
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption(caption)
 
-    # 游戏速度
-    FPS = 30
-
     # 初始化角色和食物
     pacman = PacMan((WIDTH / 2, HEIGHT / 2))
 
