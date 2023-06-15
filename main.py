@@ -4,7 +4,7 @@ import time
 
 from config import *
 from pacman import *
-
+from food import Food
 
 def run():
     # 初始化 Pygame
@@ -24,8 +24,7 @@ def run():
 
     food_list = []
     for i in range(num_food):
-        pos = random_pos()
-        food_list.append(pygame.Rect(pos[0], pos[1], food_size, food_size))
+        food_list.append(Food())
 
     random_enemy_list = []
     for i in range(num_random_enemies):
@@ -48,7 +47,7 @@ def run():
         # 渲染游戏画面
         SCREEN.fill(bg_color)
         for food in food_list:
-            pygame.draw.rect(SCREEN, food_color, food)
+            food.draw_itself(SCREEN)
 
         for man in [pacman] + random_enemy_list + track_enemy_list:
             SCREEN.blit(man.curr_image(), man.rect)
