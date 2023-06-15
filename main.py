@@ -6,6 +6,7 @@ from config import *
 from pacman import *
 from food import Food
 
+
 def run():
     # 初始化 Pygame
     pygame.init()
@@ -46,11 +47,9 @@ def run():
     def paint():
         # 渲染游戏画面
         SCREEN.fill(bg_color)
-        for food in food_list:
-            food.draw_itself(SCREEN)
 
-        for man in [pacman] + random_enemy_list + track_enemy_list:
-            SCREEN.blit(man.curr_image(), man.rect)
+        for obj in food_list + [pacman] + random_enemy_list + track_enemy_list:
+            obj.draw_itself(SCREEN)
 
         SCREEN.blit(text, (10, 10))
         pygame.display.flip()
@@ -108,7 +107,7 @@ def run():
 
         # food
         for food in food_list:
-            if pacman.rect.colliderect(food):
+            if pacman.rect.colliderect(food.rect):
                 food_list.remove(food)
                 pacman.add_weight(1)
 
