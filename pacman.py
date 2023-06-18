@@ -9,12 +9,16 @@ class Direction:
         self.x = pos[0]
         self.y = pos[1]
 
+    @staticmethod
+    def random_direction():
+        return Direction(random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)]))
+
 
 class Man:
-    def __init__(self, pos, image_name, speed=default_speed / FPS, weight=0):
+    def __init__(self, pos, image_name, speed=default_speed, weight=0):
         self.origin_image = self.image = pygame.image.load(image_name)
-        self.speed = speed
-        assert speed > 0.5, f"speed设置过小({speed * FPS})"
+        assert speed / FPS > 0.5, f"speed设置过小({speed})"
+        self.speed = speed / FPS
         self.weight = 0
         self.rect = self.curr_image().get_rect()
         self.rect.center = pos
@@ -59,10 +63,6 @@ class Man:
     def draw_itself(self, screen):
         screen.blit(self.curr_image(), self.rect)
 
-    @staticmethod
-    def random_direction():
-        return Direction(random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)]))
-
 
 class PacMan(Man):
     def __init__(self, pos):
@@ -103,7 +103,7 @@ class PacMan(Man):
 class RandomEnemy(Man):
     def __init__(self, pos):
         super().__init__(pos, random_enemy_img_name, weight=random.randint(num_food / 10, num_food))
-        self.direction = Man.random_direction()
+        self.direction = Direction.random_direction()
 
     def random_rotate(self):
         def hit_wall():
@@ -121,7 +121,7 @@ class RandomEnemy(Man):
 class TrackEnemy(Man):
     def __init__(self, pos):
         super().__init__(pos, track_enemy_img_name, weight=random.randint(num_food / 10, num_food))
-        self.direction = Man.random_direction()
+        self.direction = Direction.random_direction()
 
     def track_rotate(self, pos):
         assert self.direction.x * self.direction.y == 0

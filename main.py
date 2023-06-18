@@ -3,8 +3,9 @@ import random
 import time
 
 from config import *
-from pacman import *
 from food import Food
+from pacman import *
+from util import *
 
 
 def run():
@@ -14,35 +15,20 @@ def run():
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption(caption)
 
-    # 初始化角色和食物
+    # 初始化角色
     pacman = PacMan((WIDTH / 2, HEIGHT / 2))
-
-    # 保留偏移，防止一开始就半张图卡在框外
-    save_offset = 10
-
-    def random_pos():
-        return random.randint(save_offset, WIDTH - save_offset), random.randint(save_offset, HEIGHT - save_offset)
 
     food_list = []
     for i in range(num_food):
-        food_list.append(Food())
+        food_list.append(Food(random_pos(food_size, food_size)))
 
     random_enemy_list = []
     for i in range(num_random_enemies):
-        random_enemy_list.append(RandomEnemy(random_pos()))
+        random_enemy_list.append(RandomEnemy(random_pos(50, 50)))
 
     track_enemy_list = []
     for i in range(num_track_enemies):
-        track_enemy_list.append(TrackEnemy(random_pos()))
-
-    # 显示分数
-    score = 0
-    font = pygame.font.SysFont("Arial", 36)
-    text = font.render("Score: " + str(score), True, WHITE)
-
-    # 游戏循环
-    running = True
-    clock = pygame.time.Clock()
+        track_enemy_list.append(TrackEnemy(random_pos(50, 50)))
 
     def paint():
         # 渲染游戏画面
@@ -51,20 +37,24 @@ def run():
         for obj in food_list + [pacman] + random_enemy_list + track_enemy_list:
             obj.draw_itself(SCREEN)
 
+        # 显示分数
+        font = pygame.font.SysFont("Arial", 36)
+        text = font.render(f"Score: {pacman.weight * 10}", True, WHITE)
         SCREEN.blit(text, (10, 10))
         pygame.display.flip()
 
     def end(tip_word):
         # 游戏结束结算页面
         font = pygame.font.SysFont("Arial", 64)
-        over_text = font.render(tip_word, True, WHITE)
-        over_rect = over_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 - 50))
 
-        score_text = font.render("Score: " + str(score), True, WHITE)
-        score_rect = score_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 50))
+        over_text = font.render(tip_word, True, WHITE)
+        over_rect = over_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.3))
+
+        score_text = font.render(f"Score: {pacman.weight}", True, WHITE)
+        score_rect = score_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.5))
 
         exit_text = font.render("Exit (ESC)", True, YELLOW)
-        exit_rect = exit_text.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 200))
+        exit_rect = exit_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.8))
 
         ending = True
         # 游戏结束结算页面主循环
@@ -84,6 +74,10 @@ def run():
                     break
 
     paint()
+
+    # 游戏循环
+    running = True
+    clock = pygame.time.Clock()
 
     # 开始时暂停1s，让玩家有反应时间
     time.sleep(1)
@@ -119,14 +113,12 @@ def run():
                         random_enemy_list.remove(enemy)
                     else:
                         track_enemy_list.remove(enemy)
-                    pacman.add_weight(10)
+                    pacman.add_weight(enemy.weight)
                 else:
                     end_time = time.time()
                     duration = end_time - start_time
                     end('Game over!  cost %.2fs' % duration)
                     return
-
-        text = font.render(f"Score: {pacman.weight * 10}", True, WHITE)
 
         paint()
 
