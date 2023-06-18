@@ -139,8 +139,8 @@ def run():
 
         paint()
 
-        # 判断是否已经吃掉所有食物
-        if len(food_list) == 0:
+        # 判断是否吃完豆子和幽灵
+        if len(food_list) + len(random_enemy_list) + len(track_enemy_list) == 0:
             running = False
 
     win()
