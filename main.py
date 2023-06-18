@@ -22,13 +22,19 @@ def run():
     for i in range(num_food):
         food_list.append(Food(random_pos(food_size, food_size)))
 
-    random_enemy_list = []
-    for i in range(num_random_enemies):
-        random_enemy_list.append(RandomEnemy(random_pos(50, 50)))
+    def generate_enemy_list(ctor, num):
+        enemy_list = []
+        i = 0
+        while i < num:
+            pos = random_pos(50, 50)
+            if distance(pos, pacman.rect.center) < min(HEIGHT, WIDTH) / 3:
+                continue
+            enemy_list.append(ctor(pos))
+            i+=1
+        return enemy_list
 
-    track_enemy_list = []
-    for i in range(num_track_enemies):
-        track_enemy_list.append(TrackEnemy(random_pos(50, 50)))
+    random_enemy_list = generate_enemy_list(RandomEnemy, num_random_enemies)
+    track_enemy_list = generate_enemy_list(TrackEnemy, num_track_enemies)
 
     def paint():
         # 渲染游戏画面
