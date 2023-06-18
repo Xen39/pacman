@@ -39,28 +39,35 @@ def run():
 
         # 显示分数
         font = pygame.font.SysFont("Arial", 36)
-        text = font.render(f"Score: {pacman.weight * 10}", True, WHITE)
-        SCREEN.blit(text, (10, 10))
+        num_cur_enemies = len(track_enemy_list) + len(random_enemy_list)
+        num_total_enemies = num_track_enemies + num_random_enemies
+        tip_text = font.render(f"Score: {pacman.weight * 10} Enemy: {num_cur_enemies}/{num_total_enemies}", True, WHITE)
+        SCREEN.blit(tip_text, (10, 10))
         pygame.display.flip()
 
-    def end(tip_word):
+    def end(tip_word, color):
         # 游戏结束结算页面
-        font = pygame.font.SysFont("Arial", 64)
 
-        over_text = font.render(tip_word, True, WHITE)
-        over_rect = over_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.3))
+        end_time = time.time()
 
-        score_text = font.render(f"Score: {pacman.weight}", True, WHITE)
-        score_rect = score_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.5))
+        end_text = pygame.font.SysFont("Arial", 120, bold=True).render(tip_word, True, color)
+        end_rect = end_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.3))
 
-        exit_text = font.render("Exit (ESC)", True, YELLOW)
-        exit_rect = exit_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.8))
+        time_text = pygame.font.SysFont("Arial", 50).render(f"Time:  {(end_time - start_time).__round__(3)}s", True, WHITE)
+        time_rect = time_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.5))
+
+        score_text = pygame.font.SysFont("Arial", 50).render(f"Score: {pacman.weight * 10}", True, WHITE)
+        score_rect = score_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.6))
+
+        exit_text = pygame.font.SysFont("Arial", 50).render("Exit (ESC)", True, WHITE)
+        exit_rect = exit_text.get_rect(center=(WIDTH / 2, HEIGHT * 0.75))
 
         ending = True
         # 游戏结束结算页面主循环
         while ending:
             SCREEN.fill(bg_color)
-            SCREEN.blit(over_text, over_rect)
+            SCREEN.blit(end_text, end_rect)
+            SCREEN.blit(time_text, time_rect)
             SCREEN.blit(score_text, score_rect)
             SCREEN.blit(exit_text, exit_rect)
             pygame.display.flip()
@@ -72,6 +79,12 @@ def run():
                     pygame.quit()
                     ending = False
                     break
+
+    def win():
+        end("You win!", YELLOW)
+
+    def game_over():
+        end("Game over!", RED)
 
     paint()
 
@@ -115,9 +128,7 @@ def run():
                         track_enemy_list.remove(enemy)
                     pacman.add_weight(enemy.weight)
                 else:
-                    end_time = time.time()
-                    duration = end_time - start_time
-                    end('Game over!  cost %.2fs' % duration)
+                    game_over()
                     return
 
         paint()
@@ -126,9 +137,7 @@ def run():
         if len(food_list) == 0:
             running = False
 
-    end_time = time.time()
-    duration = end_time - start_time
-    end('You win!  cost %.2fs' % duration)
+    win()
 
 
 if __name__ == "__main__":
